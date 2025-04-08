@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from 'react';
-
 // 日付の型定義
 type DateInfo = {
   date: number;
@@ -9,9 +7,11 @@ type DateInfo = {
   isToday: boolean;
 };
 
-export default function CalendarGrid() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+type CalendarGridProps = {
+  currentDate: Date;
+};
 
+export default function CalendarGrid({ currentDate }: CalendarGridProps) {
   // カレンダーの日付を生成する関数
   const generateCalendarDates = (): DateInfo[] => {
     const year = currentDate.getFullYear();
