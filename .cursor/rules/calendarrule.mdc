@@ -1,6 +1,11 @@
 ---
 description: 
 globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
 alwaysApply: true
 ---
 
@@ -9,4 +14,4 @@ alwaysApply: true
 - You can @ files here
 - You can use markdown but dont have to
 
-このプロジェクトはタスク管理ができるToDoListカレンダーのwebアプリを作るプロジェクトです。フレームワークにはNext.js、言語はTypeScript、HTML、cssを用いてください。勝手にUIを変えないでください。
+このプロジェクトはタスク管理ができるToDoListカレンダーのwebアプリを作るプロジェクトです。今まではシンプルなjs,html,cssで書いていたのですが、フレームワークにはNext.js、言語はTypeScript、HTML、cssを用いて書き直したいと思っています。なのでフレームワークにはNext.js、言語はTypeScript、HTML、cssを用いて書いてください。また、勝手にUIを変えないでください。
