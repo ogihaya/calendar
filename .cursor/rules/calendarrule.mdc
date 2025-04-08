@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+このプロジェクトはタスク管理ができるToDoListカレンダーのwebアプリを作るプロジェクトです。フレームワークにはNext.js、言語はTypeScript、HTML、cssを用いてください。勝手にUIを変えないでください。
