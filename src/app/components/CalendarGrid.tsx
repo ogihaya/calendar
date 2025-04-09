@@ -1,10 +1,13 @@
 "use client";
 
+import { isHoliday } from '@holiday-jp/holiday_jp';
+
 // 日付の型定義
 type DateInfo = {
   date: number;
   isCurrentMonth: boolean;
   isToday: boolean;
+  isHoliday: boolean;
 };
 
 type CalendarGridProps = {
@@ -34,22 +37,26 @@ export default function CalendarGrid({ currentDate }: CalendarGridProps) {
     
     // 前月の残りの日付を追加
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+      const prevDate = new Date(year, month - 1, prevMonthLastDay - i);
       dates.push({
         date: prevMonthLastDay - i,
         isCurrentMonth: false,
-        isToday: false
+        isToday: false,
+        isHoliday: isHoliday(prevDate)
       });
     }
     
     // 今月の日付を追加
     const today = new Date();
     for (let i = 1; i <= daysInMonth; i++) {
+      const currentDate = new Date(year, month, i);
       dates.push({
         date: i,
         isCurrentMonth: true,
         isToday: today.getDate() === i && 
                  today.getMonth() === month && 
-                 today.getFullYear() === year
+                 today.getFullYear() === year,
+        isHoliday: isHoliday(currentDate)
       });
     }
     
@@ -61,10 +68,12 @@ export default function CalendarGrid({ currentDate }: CalendarGridProps) {
     // 翌月の日付を追加（必要なマス目を完成させるため）
     const remainingDays = cellsNeeded - dates.length;
     for (let i = 1; i <= remainingDays; i++) {
+      const nextDate = new Date(year, month + 1, i);
       dates.push({
         date: i,
         isCurrentMonth: false,
-        isToday: false
+        isToday: false,
+        isHoliday: isHoliday(nextDate)
       });
     }
     
@@ -92,16 +101,20 @@ export default function CalendarGrid({ currentDate }: CalendarGridProps) {
           className={`
             p-2 text-center border border-gray-200
             ${dateInfo.isCurrentMonth 
-              ? index % 7 === 0 
-                ? 'text-red-500'  // 日曜日
-                : index % 7 === 6 
-                  ? 'text-blue-500'  // 土曜日
-                  : 'text-black'  // 平日
-              : index % 7 === 0 
-                ? 'text-red-300'  // 前後月の日曜日
-                : index % 7 === 6 
-                  ? 'text-blue-300'  // 前後月の土曜日
-                  : 'text-gray-400'  // 前後月の平日
+              ? dateInfo.isHoliday
+                ? 'text-red-500'  // 祝日
+                : index % 7 === 0 
+                  ? 'text-red-500'  // 日曜日
+                  : index % 7 === 6 
+                    ? 'text-blue-500'  // 土曜日
+                    : 'text-black'  // 平日
+              : dateInfo.isHoliday
+                ? 'text-red-300'  // 前後月の祝日
+                : index % 7 === 0 
+                  ? 'text-red-300'  // 前後月の日曜日
+                  : index % 7 === 6 
+                    ? 'text-blue-300'  // 前後月の土曜日
+                    : 'text-gray-400'  // 前後月の平日
             }
             ${dateInfo.isToday ? 'bg-blue-500 text-white' : 'bg-white'}
             hover:bg-gray-100 cursor-pointer
