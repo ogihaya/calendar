@@ -1,13 +1,16 @@
-"use client";
+"use client";//データの更新が必要な要素だからクライアントコンポーネントとして認識させる
 
 import { useState } from 'react';
 import { Event } from '@/types/event';
 import EventForm from '@/components/EventForm';
 import Modal from '@/components/Modal';
+import CalendarHeader from '@/components/CalendarHeader';
+import EventList from '@/components/EventList';
+import AddEventButton from '@/components/AddEventButton';
 import CalendarGrid from './components/CalendarGrid';
 
 export default function CalendarPage() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());//[定数,定数を更新する関数]=useState(初期値)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
 
@@ -22,83 +25,37 @@ export default function CalendarPage() {
   };
 
   const handleAddEvent = (event: Event) => {
-    setEvents(prev => [...prev, event]);
+    setEvents(prev => [...prev, event]);//prevは前のstateの値、後ろに追加してる
     setIsModalOpen(false);
   };
 
   return (
     <main className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Todoリストカレンダー</h1>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
-          >
-            イベントを追加
-          </button>
-        </div>
+        
 
         <Modal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           title="イベントを追加"
         >
-          <EventForm onSubmit={handleAddEvent} />
+          <EventForm onSubmit={handleAddEvent} /> {/* EventFormがchildrenになる */} 
         </Modal>
 
         <div className="max-w-2xl mx-auto">
-          {/* カレンダーのヘッダー部分 */}
-          <div className="flex justify-between items-center mb-4">
-            {/* 前月ボタン */}
-            <button 
-              onClick={goToPreviousMonth}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
-            >
-              &lt;
-            </button>
-            
-            {/* 年月表示部分 */}
-            <div className="text-xl font-bold">
-              {currentDate.getFullYear()}年{currentDate.getMonth() + 1}月
-            </div>
-            
-            {/* 次月ボタン */}
-            <button 
-              onClick={goToNextMonth}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
-            >
-              &gt;
-            </button>
-          </div>
-
-          {/* CalendarGridコンポーネントを使用 */}
+          <CalendarHeader
+            currentDate={currentDate}
+            onPrevMonth={goToPreviousMonth}
+            onNextMonth={goToNextMonth}
+          />
           <CalendarGrid currentDate={currentDate} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-          {events.map(event => (
-            <div
-              key={event.id}
-              className="bg-white p-4 rounded-lg shadow"
-            >
-              <h3 className="font-semibold">{event.name}</h3>
-              {event.type === 'schedule' ? (
-                <div>
-                  <p>開始: {event.startTime.toLocaleString()}</p>
-                  <p>終了: {event.endTime.toLocaleString()}</p>
-                  {event.location && <p>場所: {event.location}</p>}
-                </div>
-              ) : (
-                <div>
-                  <p>締め切り: {event.deadline.toLocaleString()}</p>
-                  <p>所要時間: {event.estimatedTime}分</p>
-                </div>
-              )}
-              {event.memo && <p className="mt-2 text-gray-600">{event.memo}</p>}
-            </div>
-          ))}
+        <div className="flex justify-between items-center mb-8">
+          <AddEventButton onClick={() => setIsModalOpen(true)} />
         </div>
+
+        <EventList events={events} />
       </div>
     </main>
   );

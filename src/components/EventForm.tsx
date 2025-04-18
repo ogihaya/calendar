@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Event, EventType, Schedule, Task } from '@/types/event';
+import { Event, EventType, Schedule, Task, RepeatType } from '@/types/event';
 
 interface EventFormProps {
   onSubmit: (event: Event) => void;
@@ -17,7 +17,7 @@ interface ScheduleFormData extends BaseFormData {
   type: 'schedule';
   startTime?: string;
   endTime?: string;
-  repeat?: string;
+  repeat?: RepeatType;
   location?: string;
 }
 
@@ -71,7 +71,7 @@ export default function EventForm({ onSubmit }: EventFormProps) {
         name: schedule.name,
         startTime: new Date(schedule.startTime!),
         endTime: new Date(schedule.endTime!),
-        repeat: schedule.repeat as any,
+        repeat: schedule.repeat || 'none',
         location: schedule.location,
         memo: schedule.memo,
       };
@@ -92,6 +92,15 @@ export default function EventForm({ onSubmit }: EventFormProps) {
       type: eventType,
       name: '',
       memo: '',
+      repeat: 'none',
+      ...(eventType === 'schedule' ? {
+        startTime: '',
+        endTime: '',
+        location: ''
+      } : {
+        deadline: '',
+        estimatedTime: undefined
+      })
     } as FormData);
   };
 
@@ -110,6 +119,15 @@ export default function EventForm({ onSubmit }: EventFormProps) {
       type: newType,
       name: '',
       memo: '',
+      repeat: 'none',
+      ...(newType === 'schedule' ? {
+        startTime: '',
+        endTime: '',
+        location: ''
+      } : {
+        deadline: '',
+        estimatedTime: undefined
+      })
     } as FormData);
   };
 

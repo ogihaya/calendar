@@ -25,7 +25,7 @@ export default function Modal({ isOpen, onClose, children, title }: ModalProps) 
           </button>
         </div>
         <div className="p-4">
-          {children}
+          {children} {/* EventFormを受け取る */} 
         </div>
       </div>
     </div>
