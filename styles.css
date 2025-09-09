@@ -1,0 +1,426 @@
+/* 全体的なフォントと背景を設定 */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+/*表示年月の設定*/
+#displayedYM {
+    text-align: center;/*中央に表示*/
+    font-size: 28px; /* 少し大きく */
+    color: #333;
+    margin-bottom: 20px; /* 下に余白を追加 */
+}
+
+/*前後月のボタンの設定*/
+#prevMonthBtn, #nextMonthBtn {
+    background-color: #4CAF50; /* モダンな緑色 */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px; /* 角を丸く */
+    transition: background-color 0.3s ease; /* ホバーエフェクト用 */
+}
+
+#prevMonthBtn:hover, #nextMonthBtn:hover {
+    background-color: #45a049; /* ホバー時に少し濃く */
+}
+
+#prevMonthBtn {
+    float: left;/*戻るボタンは左*/
+}
+#nextMonthBtn {
+    float: right;/*進むボタンは右*/
+}
+
+/* カレンダーテーブル */
+table {
+    table-layout: fixed; /* 各セルの幅を固定 */
+    border-collapse: collapse;/*枠線作る*/
+    width: 100%;/*幅いっぱいに使う*/
+    background-color: #fff; /* テーブル背景を白に */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 影を追加 */
+    margin-bottom: 20px; /* 下に余白 */
+}
+th, td{
+    border: 1px solid #ddd;/*枠線の幅*/
+    padding: 8px; /* セル内の余白 */
+    text-align: center; /* 文字を中央揃え */
+    height: 80px; /* セルの高さを少し確保 */
+}
+
+th {
+    background-color: #f0f0f0; /* ヘッダー背景色 */
+    font-weight: bold;
+}
+
+td{
+    white-space: normal; /* 改行を許可し、内容が見切れないように */
+    overflow: hidden;    /* はみ出した部分を隠す */
+    vertical-align: top; /* 内容を上寄せに */
+}
+
+.date { /* 日付自体のスタイル */
+    font-size: 1.1em;
+    font-weight: bold;
+    display: block; /* ブロック要素にして余白調整しやすく */
+    margin-bottom: 4px;
+}
+
+/*日付のclassに応じて色付け*/
+.sunday .date, .holiday .date { /* クラス指定をより具体的に */
+    color: red;/*日曜・祝日は赤*/
+}
+.saturday .date {
+    color: blue;/*土曜は青*/
+}
+.today{
+    background-color: #a2e8a7;/*今日の日付の背景に色付ける (少し薄めに)*/
+}
+.prevNextMonthDate {
+    opacity: 0.5; /* 前後月の日付は少し濃く */
+    background-color: #f9f9f9; /* 背景色を少し変える */
+}
+
+/*選択したセルを赤枠で表示*/
+.selected {
+    border: 3px solid #e91e63; /* 選んでいるセルは目立つ色で太く */
+    background-color: #f8bbd0; /* 選択セルの背景色も少し変える */
+}
+
+/* モーダルの共通スタイル */
+.modal {
+    display: none; /* デフォルトでは非表示 */
+    position: fixed; /* 画面固定 */
+    z-index: 100; /* 最前面に表示 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* スクロール可能に */
+    background-color: rgba(0,0,0,0.6); /* 背景を半透明の黒に */
+}
+
+/* モーダルコンテンツのスタイル */
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* 上下10%マージン、左右中央揃え */
+    padding: 25px;
+    border: 1px solid #888;
+    width: 80%; /* 幅を80%に */
+    max-width: 500px; /* 最大幅を設定 */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* モーダル内の閉じるボタン */
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* モーダル内のフォーム要素のスタイル */
+.modal input[type="text"],
+.modal input[type="datetime-local"],
+.modal input[type="date"],
+.modal input[type="number"],
+.modal select {
+    width: calc(100% - 22px); /* paddingを考慮した幅 */
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.modal button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.modal button:hover {
+    background-color: #45a049;
+}
+
+.modal button.closeAddEventModalBtn,
+.modal button.closeEditScheduleModalBtn,
+.modal button.closeEditTaskModalBtn,
+.modal button#closeOptionChangeDateModalBtn {
+    background-color: #f44336; /* 閉じるボタンは赤系に */
+}
+
+.modal button.closeAddEventModalBtn:hover,
+.modal button.closeEditScheduleModalBtn:hover,
+.modal button.closeEditTaskModalBtn:hover,
+.modal button#closeOptionChangeDateModalBtn:hover {
+    background-color: #da190b;
+}
+
+
+/* 特定のモーダルIDに新しいクラス構造を適用するための準備 */
+/* 注意: HTML側で <div id="addEventModal" class="modal"> のように 되어 있는 경우,
+   以下のスタイルを適用するには、JavaScriptでモーダル表示時に .modal-content を動的に追加するか、
+   HTML構造を <div id="addEventModal" class="modal"><div class="modal-content">...</div></div> のように変更する必要があります。
+   ここではCSSのみの変更なので、既存のIDセレクタを維持しつつ、スタイルを調整します。 */
+
+#addEventModal,
+#editScheduleModal,
+#editTaskModal,
+#optionChangeDateModal {
+    /* .modal のスタイルを継承しつつ、paddingなどを調整 */
+    padding: 0; /* .modal-content でpaddingを指定するので、ここは0に */
+}
+
+/* モーダル内の各フィールドコンテナ */
+#addEventModal > div,
+#editScheduleModal > div,
+#editTaskModal > div,
+#optionChangeDateModal > div,
+#scheduleFields,
+#taskFields {
+    background-color: #fefefe;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px; /* モーダル上部や直前の要素からのマージンを10pxに統一 */
+    margin-bottom: 5%;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 80%; /* 幅を80%に */
+    max-width: 500px; /* 最大幅を設定 */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+#addEventModal > p { /* ラジオボタンを囲むp要素 */
+    margin-bottom: 0; /* 下マージンを0にして、入力フィールドとの間隔をなくす */
+    text-align: center; /* ラジオボタンを中央揃えにする場合 */
+    margin-top: 10px; /* モーダル上部からのマージンは少し残す (必要に応じて調整) */
+}
+
+/* 編集モーダルの主要コンテンツブロックのマージン調整 */
+/* #editScheduleModal > div, #editTaskModal > div は既に上記のセレクタに含まれているため、
+   ここでは編集モーダル内の各入力項目 (pタグなど) のマージンを調整する場合の例を示す。
+   もし編集モーダルのHTML構造が <div id="editScheduleModal"><p>...</p><p>...</p></div> のようになっているなら、
+   以下のようなスタイルでp要素間のマージンや、最初のp要素のモーダル上部からのマージンを調整できる。
+   今回は #editScheduleModal > div, #editTaskModal > div の margin-top を10pxにしているので、
+   この部分はコメントアウトしておく。
+*/
+/*
+#editScheduleModal > p,
+#editTaskModal > p {
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+}
+
+#editScheduleModal > p:first-child,
+#editTaskModal > p:first-child {
+    margin-top: 10px; 
+}
+*/
+
+/*最初は予定のフォームだけ表示させたいのでタスクのフォームは非表示*/
+#taskFields{
+    display: none;
+}
+
+/*タスクのリストの見た目*/
+#taskArea {
+    display: flex;
+    flex-wrap: wrap; /* 小画面で折り返すように */
+    margin-top: 20px;
+    gap: 20px; /* 要素間の隙間 */
+}
+
+#taskList, #noDeadlineTaskWindow {
+    /* flex-basis: calc(50% - 10px); */ /* この行を削除またはコメントアウト */
+    min-width: 280px; /* 最小幅 */
+    height: 250px; /* 少し高さを増やす */
+    border: 1px solid #ccc;
+    padding: 15px;
+    overflow-y: auto; /* scrollからautoへ変更 */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin: 0; /* #taskAreaでgapを指定するので個別のmarginは不要 */
+}
+
+#taskList {
+    flex: 7; /* 幅の比率を7に設定 */
+}
+
+#noDeadlineTaskWindow {
+    flex: 3; /* 幅の比率を3に設定 */
+}
+
+#taskList h3, #noDeadlineTaskWindow h3 { /* 見出しを追加する場合のスタイル */
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+
+/* カレンダーセル内の予定・タスク表示 */
+.schedulecontents, .taskcontents {
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.scheduleNameInCell{
+    background-color: #e3f2fd; /* 淡い青 */
+    color: #1e88e5;
+    border: 1px solid #bbdefb;
+    padding: 3px 5px;
+    margin-bottom: 3px;
+    border-radius: 4px;
+    display: block; /* ブロック要素にして幅いっぱいに */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 文字がはみ出たら...で表示 */
+    white-space: nowrap;
+}
+.taskNameInCell{
+    background-color: #e8f5e9; /* 淡い緑 */
+    color: #388e3c;
+    border: 1px solid #c8e6c9;
+    padding: 3px 5px;
+    margin-bottom: 3px;
+    border-radius: 4px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* イベント詳細エリア */
+#eventDetails {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#selectedDateDisplay {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#eventLists p {
+    margin: 5px 0;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-left: 3px solid #4CAF50;
+}
+
+/* 入力フォームエリア */
+#availableTime, #accountDate, #unscheduledAvailableTime {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#update, #addEventModalBtn, #google-login-button, #logout-button {
+    background-color: #007bff; /* プライマリボタンの色 */
+    color: white;
+    padding: 10px 18px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#update:hover, #addEventModalBtn:hover, #google-login-button:hover, #logout-button:hover {
+    background-color: #0056b3;
+}
+
+#logout-button {
+    background-color: #dc3545; /* ログアウトボタンは赤系 */
+}
+#logout-button:hover {
+    background-color: #c82333;
+}
+
+/* ログイン状態表示 */
+#loginStatus {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* 編集モーダルのオーバーレイ（背景）を半透明にし、中央にモーダル本体を表示 */
+#editScheduleModal,
+#editTaskModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.6); /* 半透明の黒背景 */
+    z-index: 200;
+    display: none;
+    overflow-y: auto; /* モーダル内でスクロール可能に */
+    padding: 0 10px; /* 左右に余白を追加 */
+}
+#editScheduleModal.show,
+#editTaskModal.show {
+    display: block;
+}
+
+/* モーダル本体（中央の白いボックス） */
+#editScheduleModal .modal-content,
+#editTaskModal .modal-content {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    padding: 25px 0;
+    max-width: 500px;
+    width: 90%;
+    margin: 40px auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#editScheduleModal p,
+#editTaskModal p {
+    background: none;
+    margin: 10px 0;
+}
+
+#editScheduleModal button,
+#editTaskModal button {
+    margin-top: 10px;
+}
